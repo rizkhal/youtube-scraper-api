@@ -1,8 +1,7 @@
 {
   "name": "youtube-scraper-api",
   "private": true,
-  "type": "module",
-  "main": "dist/server.js",
+  "main": "dist/app.js",
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "rimraf dist && tsc",
