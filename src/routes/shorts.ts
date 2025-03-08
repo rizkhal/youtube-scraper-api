@@ -3,10 +3,11 @@ import Shorts from "../scripts/shorts";
 import { saveShortsToSupabase } from "../services/shorts";
 
 const router: Router = Router();
-const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
 
 router.get("/", async (req, res) => {
   try {
+    const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
+
     const data = await Shorts([channels[0]]);
 
     res.json({ success: true, data });
@@ -19,6 +20,7 @@ router.get("/", async (req, res) => {
 
 router.get("/schedule", async (req, res) => {
   try {
+    const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
     const { channel } = req.query;
 
     const selectedChannels = channel ? [channel as string] : channels;

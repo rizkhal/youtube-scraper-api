@@ -7,7 +7,6 @@ import {
 } from "../services/videos";
 
 const router: Router = Router();
-const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
 
 router.get("/", async (req, res) => {
   try {
@@ -34,11 +33,13 @@ router.get("/:channel", async (req, res) => {
 });
 
 router.get("/schedule", async (req, res) => {
-  if (!channels || !channels.length) {
-    return res.status(500).json({ success: false, message: "" });
-  }
-
   try {
+    const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
+
+    if (!channels || !channels.length) {
+      return res.status(500).json({ success: false, message: "" });
+    }
+
     const videos = await Videos(channels);
     // @ts-ignore
     await saveVideosToSupabase(videos);
