@@ -45,45 +45,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = Scrapper;
+exports.default = Shorts;
 const puppeteer_1 = __importDefault(require("puppeteer"));
 const cheerio = __importStar(require("cheerio"));
-function Scrapper(channels) {
+function Shorts(channels) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const browser = yield puppeteer_1.default.launch({
                 headless: true,
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
             });
-            const allVideos = [];
+            const allShorts = [];
             for (const channel of channels) {
-                const url = `https://www.youtube.com/${channel}/videos`;
+                const url = `https://www.youtube.com/${channel}/shorts`;
                 const page = yield browser.newPage();
                 yield page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
                 yield page.goto(url, { waitUntil: "networkidle2" });
-                yield page.waitForSelector("#contents");
+                // Wait for necessary elements
+                yield page.waitForSelector("ytd-rich-item-renderer", { timeout: 5000 });
                 const html = yield page.content();
                 const $ = cheerio.load(html);
-                const videoIds = new Set();
-                $("ytd-rich-item-renderer a#thumbnail").each((_, element) => {
-                    const videoPath = $(element).attr("href");
-                    if (videoPath === null || videoPath === void 0 ? void 0 : videoPath.startsWith("/watch?v=")) {
-                        videoIds.add(videoPath.replace("/watch?v=", ""));
+                const shorts = [];
+                $("ytd-rich-item-renderer").each((_, element) => {
+                    const videoPath = $(element)
+                        .find("a.shortsLockupViewModelHostEndpoint")
+                        .attr("href");
+                    let thumbnailUrl = $(element)
+                        .find("img.shortsLockupViewModelHostThumbnail")
+                        .attr("src");
+                    if (videoPath === null || videoPath === void 0 ? void 0 : videoPath.startsWith("/shorts/")) {
+                        const videoId = videoPath.replace("/shorts/", "");
+                        // Fix for missing thumbnails or ensure correct YouTube CDN URL
+                        if (!thumbnailUrl) {
+                            thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+                        }
+                        else {
+                            thumbnailUrl = thumbnailUrl.replace(/&amp;/g, "&"); // Fix HTML encoding
+                        }
+                        shorts.push({
+                            channel,
+                            video_id: videoId,
+                            url: `https://www.youtube.com/shorts/${videoId}`,
+                            thumbnail: thumbnailUrl,
+                            created_at: new Date().toISOString(),
+                        });
                     }
                 });
-                const videos = Array.from(videoIds).map((id) => ({
-                    channel,
-                    video_id: id,
-                    url: `https://www.youtube.com/watch?v=${id}`,
-                    created_at: new Date().toISOString(),
-                }));
-                allVideos.push(...videos);
+                allShorts.push(...shorts);
             }
             yield browser.close();
-            return allVideos;
+            return allShorts;
         }
         catch (error) {
-            console.log(error);
+            console.error("Error scraping shorts:", error);
             throw error;
         }
     });

@@ -13,15 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const scraper_1 = __importDefault(require("../scripts/scraper"));
-const videos_1 = require("../services/videos");
+const videos_1 = __importDefault(require("../scripts/videos"));
+const videos_2 = require("../services/videos");
 const router = (0, express_1.Router)();
-router.get("/", (req, res) => {
-    res.send("Ok");
-});
-router.get("/api/videos", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
+router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const videos = yield (0, videos_1.getVideosFromSupabase)();
+        const videos = yield (0, videos_2.getVideosFromSupabase)();
         res.json({ success: true, videos });
     }
     catch (error) {
@@ -30,10 +28,10 @@ router.get("/api/videos", (req, res) => __awaiter(void 0, void 0, void 0, functi
             .json({ success: false, message: "Failed to fetch videos", error });
     }
 }));
-router.get("/api/videos/:channel", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:channel", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { channel } = req.params;
     try {
-        const videos = yield (0, videos_1.getVideoWhereChannel)(channel);
+        const videos = yield (0, videos_2.getVideoWhereChannel)(channel);
         res.json({ success: true, videos });
     }
     catch (error) {
@@ -42,15 +40,14 @@ router.get("/api/videos/:channel", (req, res) => __awaiter(void 0, void 0, void 
             .json({ success: false, message: "Failed to fetch video", error });
     }
 }));
-router.get("/api/schedule", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
+router.get("/schedule", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!channels || !channels.length) {
         return res.status(500).json({ success: false, message: "" });
     }
     try {
-        const videos = yield (0, scraper_1.default)(channels);
+        const videos = yield (0, videos_1.default)(channels);
         // @ts-ignore
-        yield (0, videos_1.saveVideosToSupabase)(videos);
+        yield (0, videos_2.saveVideosToSupabase)(videos);
         res.json({ success: true, message: "Scraper ran successfully!", videos });
     }
     catch (error) {
