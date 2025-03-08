@@ -1,4 +1,4 @@
-# youtube-scrapper-api
+# youtube-scraper-api
 
 To install dependencies:
 
