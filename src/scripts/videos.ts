@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
 
-export default async function Scrapper(channels: string[]) {
+export default async function Videos(channels: string[]) {
   try {
     const browser = await puppeteer.launch({
       headless: true,

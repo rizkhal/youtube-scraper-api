@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Scrapper from "../scripts/scraper";
+import Videos from "../scripts/videos";
 import {
   getVideosFromSupabase,
   getVideoWhereChannel,
@@ -7,12 +7,9 @@ import {
 } from "../services/videos";
 
 const router: Router = Router();
+const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
 
-router.get("/", (req, res) => {
-  res.send("Ok");
-});
-
-router.get("/api/videos", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const videos = await getVideosFromSupabase();
     res.json({ success: true, videos });
@@ -23,7 +20,7 @@ router.get("/api/videos", async (req, res) => {
   }
 });
 
-router.get("/api/videos/:channel", async (req, res) => {
+router.get("/:channel", async (req, res) => {
   const { channel } = req.params;
 
   try {
@@ -36,15 +33,13 @@ router.get("/api/videos/:channel", async (req, res) => {
   }
 });
 
-router.get("/api/schedule", async (req, res) => {
-  const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
-
+router.get("/schedule", async (req, res) => {
   if (!channels || !channels.length) {
     return res.status(500).json({ success: false, message: "" });
   }
 
   try {
-    const videos = await Scrapper(channels);
+    const videos = await Videos(channels);
     // @ts-ignore
     await saveVideosToSupabase(videos);
     res.json({ success: true, message: "Scraper ran successfully!", videos });
