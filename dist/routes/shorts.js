@@ -16,9 +16,9 @@ const express_1 = require("express");
 const shorts_1 = __importDefault(require("../scripts/shorts"));
 const shorts_2 = require("../services/shorts");
 const router = (0, express_1.Router)();
-const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
         const data = yield (0, shorts_1.default)([channels[0]]);
         res.json({ success: true, data });
     }
@@ -30,6 +30,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.get("/schedule", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
         const { channel } = req.query;
         const selectedChannels = channel ? [channel] : channels;
         if (!selectedChannels || !selectedChannels.length) {

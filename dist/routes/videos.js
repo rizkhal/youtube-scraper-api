@@ -16,7 +16,6 @@ const express_1 = require("express");
 const videos_1 = __importDefault(require("../scripts/videos"));
 const videos_2 = require("../services/videos");
 const router = (0, express_1.Router)();
-const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const videos = yield (0, videos_2.getVideosFromSupabase)();
@@ -41,10 +40,11 @@ router.get("/:channel", (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 router.get("/schedule", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!channels || !channels.length) {
-        return res.status(500).json({ success: false, message: "" });
-    }
     try {
+        const channels = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
+        if (!channels || !channels.length) {
+            return res.status(500).json({ success: false, message: "" });
+        }
         const videos = yield (0, videos_1.default)(channels);
         // @ts-ignore
         yield (0, videos_2.saveVideosToSupabase)(videos);
