@@ -1,20 +1,18 @@
-import "dotenv/config";
-import express from "express";
-import Scrapper from "../src/scraper";
+import { Router } from "express";
+import Scrapper from "../scripts/scraper";
 import {
   getVideosFromSupabase,
   getVideoWhereChannel,
   saveVideosToSupabase,
-} from "../src/services/videos";
+} from "../services/videos";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const router: Router = Router();
 
-app.get("/", (req, res) => {
+router.get("/", (req, res) => {
   res.send("Ok");
 });
 
-app.get("/api/videos", async (req, res) => {
+router.get("/api/videos", async (req, res) => {
   try {
     const videos = await getVideosFromSupabase();
     res.json({ success: true, videos });
@@ -25,7 +23,7 @@ app.get("/api/videos", async (req, res) => {
   }
 });
 
-app.get("/api/videos/:channel", async (req, res) => {
+router.get("/api/videos/:channel", async (req, res) => {
   const { channel } = req.params;
 
   try {
@@ -38,7 +36,7 @@ app.get("/api/videos/:channel", async (req, res) => {
   }
 });
 
-app.get("/api/schedule", async (req, res) => {
+router.get("/api/schedule", async (req, res) => {
   const channels: string[] = JSON.parse(process.env.YOUTUBE_CHANNELS || "[]");
 
   if (!channels || !channels.length) {
@@ -57,8 +55,4 @@ app.get("/api/schedule", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
-export default app;
+export default router;
