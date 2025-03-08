@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../lib/supabase";
 
 export async function getVideoWhereChannel(channel: string) {
   const { data, error } = await supabase

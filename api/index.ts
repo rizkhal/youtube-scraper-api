@@ -1,11 +1,11 @@
 import "dotenv/config";
 import express from "express";
-import Scrapper from "@/scrapper";
+import Scrapper from "../src/scraper";
 import {
   getVideosFromSupabase,
   getVideoWhereChannel,
   saveVideosToSupabase,
-} from "@/services/videos";
+} from "../src/services/videos";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
