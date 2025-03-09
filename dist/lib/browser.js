@@ -13,18 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBrowserInstance = createBrowserInstance;
-const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
 const chromium_1 = __importDefault(require("@sparticuz/chromium"));
+const puppeteer_1 = __importDefault(require("puppeteer"));
+const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
 function createBrowserInstance() {
     return __awaiter(this, void 0, void 0, function* () {
+        if (process.env.LOCAL) {
+            return yield puppeteer_1.default.launch({
+                headless: true,
+                args: ["--no-sandbox", "--disable-setuid-sandbox", "--incognito"],
+            });
+        }
         return yield puppeteer_core_1.default.launch({
+            args: chromium_1.default.args,
+            defaultViewport: chromium_1.default.defaultViewport,
             executablePath: yield chromium_1.default.executablePath(),
             headless: chromium_1.default.headless,
-            args: chromium_1.default.args,
         });
-        // return await puppeteer.launch({
-        //   headless: true,
-        //   args: ["--no-sandbox", "--disable-setuid-sandbox", "--incognito"],
-        // });
     });
 }
