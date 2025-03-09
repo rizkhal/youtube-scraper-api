@@ -8,7 +8,7 @@
     "start": "node --import tsx dist/app.js"
   },
   "dependencies": {
-    "@sparticuz/chromium": "^133.0.0",
+    "@sparticuz/chromium": "~132.0.0",
     "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12",
@@ -18,7 +18,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.18.2",
     "puppeteer": "^24.4.0",
-    "puppeteer-core": "^24.4.0",
+    "puppeteer-core": "~22.11.2",
     "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
