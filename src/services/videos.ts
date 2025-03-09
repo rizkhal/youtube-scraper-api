@@ -1,30 +1,5 @@
-import { supabase } from "../lib/supabase";
-
-export async function getVideoWhereChannel(channel: string) {
-  const { data, error } = await supabase
-    .from("videos")
-    .select("*")
-    .eq("channel", channel)
-    .select("*");
-
-  if (error) {
-    console.error("❌ Supabase fetch error:", error);
-    throw error;
-  }
-
-  return data;
-}
-
-export async function getVideosFromSupabase() {
-  const { data, error } = await supabase.from("videos").select("*");
-
-  if (error) {
-    console.error("❌ Supabase fetch error:", error);
-    throw error;
-  }
-
-  return data;
-}
+import { Request } from "express";
+import { supabase, paginate } from "../lib/supabase";
 
 export type TVideo = {
   channel: string;
@@ -32,6 +7,25 @@ export type TVideo = {
   url: string;
   created_at: string;
 };
+
+export async function getVideoWhereChannel(req: Request, channel: string) {
+  const { page = 1, pageSize = 10 } = req.query;
+
+  return await paginate("videos", page as number, pageSize as number, (query) =>
+    query
+      .select("*")
+      .eq("channel", channel)
+      .order("created_at", { ascending: false })
+  );
+}
+
+export async function getVideosFromSupabase(req: Request) {
+  const { page = 1, pageSize = 10 } = req.query;
+
+  return await paginate("videos", page as number, pageSize as number, (query) =>
+    query.select("*").order("created_at", { ascending: false })
+  );
+}
 
 export async function saveVideosToSupabase(videos: TVideo[]) {
   const { data, error } = await supabase.from("videos").upsert(videos);

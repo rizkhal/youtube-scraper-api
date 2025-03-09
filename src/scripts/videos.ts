@@ -1,12 +1,10 @@
-import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
+import { createBrowserInstance } from "../lib/browser";
+import { TVideo } from "../services/videos";
 
-export default async function Videos(channels: string[]) {
+export default async function Videos(channels: string[]): Promise<TVideo[]> {
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    const browser = await createBrowserInstance();
 
     const allVideos = [];
 
@@ -34,7 +32,7 @@ export default async function Videos(channels: string[]) {
 
       const videos = Array.from(videoIds).map((id) => ({
         channel,
-        video_id: id,
+        video_id: id as string,
         url: `https://www.youtube.com/watch?v=${id}`,
         created_at: new Date().toISOString(),
       }));

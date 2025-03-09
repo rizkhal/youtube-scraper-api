@@ -1,6 +1,7 @@
 import "dotenv/config";
 import videos from "./routes/videos";
 import shorts from "./routes/shorts";
+import channels from "./routes/channels";
 import express, { Express } from "express";
 
 const app: Express = express();
@@ -11,8 +12,8 @@ app.get("/", (req, res) => {
   res.status(200).json("Ok");
 });
 
-app.use("/api/videos", videos);
-app.use("/api/shorts", shorts);
+app.use(videos);
+app.use(shorts);
 
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || "localhost";

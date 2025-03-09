@@ -19,7 +19,7 @@
     ],
     "crons": [
         {
-            "path": "/api/schedule",
+            "path": "/api/run/videos",
             "schedule": "0 10 * * *"
         }
     ]
