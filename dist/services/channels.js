@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getYoutubeChannels = getYoutubeChannels;
+exports.saveChannelsToSupabase = saveChannelsToSupabase;
 const supabase_1 = require("../lib/supabase");
 function getYoutubeChannels() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -17,6 +18,17 @@ function getYoutubeChannels() {
         if (error) {
             console.error("❌ Supabase fetch error:", error);
             throw error;
+        }
+        return data;
+    });
+}
+function saveChannelsToSupabase(channels) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { data, error } = yield supabase_1.supabase
+            .from("channels")
+            .upsert(channels, { onConflict: "username" });
+        if (error) {
+            console.error("❌ Supabase insert error:", error);
         }
         return data;
     });

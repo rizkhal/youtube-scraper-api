@@ -21,6 +21,10 @@
         {
             "path": "/api/run/videos",
             "schedule": "0 10 * * *"
+        },
+        {
+            "path": "/api/run/channels",
+            "schedule": "0 10 * * *"
         }
     ]
 }
