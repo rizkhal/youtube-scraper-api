@@ -1,9 +1,10 @@
 import puppeteer, { Browser } from "puppeteer-core";
-import chromium from "chrome-aws-lambda";
+// @ts-ignore
+import * as chromium from "chromium";
 
 export async function createBrowserInstance(): Promise<Browser> {
   return await puppeteer.launch({
-    executablePath: await chromium.executablePath,
+    executablePath: chromium.path,
     headless: chromium.headless,
     args: chromium.args,
   });
