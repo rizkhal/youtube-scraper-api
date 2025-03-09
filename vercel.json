@@ -26,11 +26,5 @@
             "path": "/api/run/channels",
             "schedule": "0 10 * * *"
         }
-    ],
-    "build": {
-        "env": {
-            "LD_LIBRARY_PATH": "/usr/lib64:/usr/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu",
-            "PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/lib64:/lib"
-        }
-    }
+    ]
 }

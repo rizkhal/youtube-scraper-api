@@ -6,7 +6,7 @@
     "dev": "tsx watch src/app.ts",
     "build": "rimraf dist && tsc",
     "start": "node --import tsx dist/app.js",
-    "postinstall": "bunx puppeteer browsers install chrome"
+    "postinstall": "apt-get update && apt-get install -y libnss3 libatk1.0-0 libx11-xcb1"
   },
   "dependencies": {
     "@sparticuz/chromium": "~132.0.0",
