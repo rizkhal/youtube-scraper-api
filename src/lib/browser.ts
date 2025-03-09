@@ -3,9 +3,10 @@ import chromium from "@sparticuz/chromium";
 
 export async function createBrowserInstance(): Promise<Browser> {
   return await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath(),
     headless: chromium.headless,
-    args: chromium.args,
   });
 
   // return await puppeteer.launch({
