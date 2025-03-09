@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch src/app.ts",
     "build": "rimraf dist && tsc",
-    "start": "node --import tsx dist/app.js"
+    "start": "node --import tsx dist/app.js",
+    "postinstall": "bunx puppeteer browsers install chrome"
   },
   "dependencies": {
     "@sparticuz/chromium": "~132.0.0",
